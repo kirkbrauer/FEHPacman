@@ -134,6 +134,10 @@ unsigned int PLAYER_FRAMES[PLAYER_FRAME_COUNT*(PLAYER_SIZE*PLAYER_SIZE)] = {
 
 Player::Player(int x, int y, unsigned int scale): Sprite(PLAYER_FRAMES, PLAYER_FRAME_COUNT, x, y, PLAYER_SIZE, PLAYER_SIZE, scale) {
   current_frame = 0;
+  direction = North;
+  dead = false;
+  moving = false;
+  move_anim_direction = 1;
 }
 
 void Player::update(unsigned int frame) {
@@ -149,7 +153,7 @@ void Player::update(unsigned int frame) {
 }
 
 void Player::move(Direction dir) {
-  moving = true;
+  moving = false;
   direction = dir;
   switch  (direction) {
     case North:

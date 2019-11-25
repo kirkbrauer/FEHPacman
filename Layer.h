@@ -13,8 +13,8 @@ class Layer: public Entity {
     unsigned int count;
   public:
     Layer(Entity *entities, unsigned int count);
-    void update(unsigned int time) final;
-    void render() override;
+    void update(unsigned int time);
+    void render();
 };
 
 
