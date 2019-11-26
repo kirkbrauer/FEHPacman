@@ -4,7 +4,8 @@
 
 #include "Bounds.h"
 
-Bounds::Bounds(Position *pos, const Size *s): size(s) {
+Bounds::Bounds(Position *pos, Size *s) { 
+  size = s;
   position = pos;
 }
 

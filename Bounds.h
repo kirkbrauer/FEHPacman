@@ -12,10 +12,10 @@
 class Bounds {
   private:
     Position *position;
-    const Size *size;
+    Size *size;
   public:
     Bounds(): position(), size() {};
-    Bounds(Position *position, const Size *size);
+    Bounds(Position *position, Size *size);
     unsigned int get_x();
     unsigned int get_y();
     unsigned int get_max_x();
