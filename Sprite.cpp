@@ -70,8 +70,10 @@ void Sprite::render() {
   for(unsigned int x = 0; x < size.width; x++) {
     for (unsigned int y = 0; y < size.height; y++) {
       unsigned int hex = frame[(y * size.width) + x];
-      LCD.SetFontColor(hex);
-      LCD.FillRectangle((position.x * scale) + (x * scale), (position.y * scale) + (y * scale), scale, scale);
+      if (hex != TRANSPARENT) {
+        LCD.SetFontColor(hex);
+        LCD.DrawPixel(position.x + x, position.y + y);
+      }
     }
   }
 }

@@ -8,7 +8,7 @@
 #include "Sprite.h"
 #include "Direction.h"
 
-#define PLAYER_SIZE 13
+#define PLAYER_SIZE 16
 #define PLAYER_FRAME_COUNT 9
 
 class Player: public Sprite {

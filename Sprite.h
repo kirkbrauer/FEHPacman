@@ -9,6 +9,7 @@
 #include "Position.h"
 #include "Size.h"
 #include "Bounds.h"
+#define TRANSPARENT 0xFF00F5
 
 struct RGB {
   unsigned int r, g, b;
