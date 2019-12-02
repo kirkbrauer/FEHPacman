@@ -17,7 +17,7 @@ int main() {
 
     unsigned int frame = 0;
 
-    while (!LCD.Touch(&x, &y)) {}
+    while (!LCD.Touch(&x, &y));
 
     while(true) {
         // LCD.ClearBuffer();
