@@ -1,17 +1,20 @@
 #ifndef FEHGAMECLASSES_COLLIDER_H
 #define FEHGAMECLASSES_COLLIDER_H
 
+#include "Size.h"
+
 class Collider {
 private:
-  bool **map;
-  int xSiz, ySiz;
+  int *map;
+  Size size;
 public:
-  Collider(bool **map, int xSiz, int ySiz);
-  bool atIntersection(int x, int y);
-  bool canGoNorth(int x, int y);
-  bool canGoSouth(int x, int y);
-  bool canGoEast(int x, int y);
-  bool canGoWest(int x, int y);
+  Collider();
+  Collider(int *map, int width, int height);
+  bool at_intersection(int x, int y);
+  bool can_go_north(int x, int y);
+  bool can_go_south(int x, int y);
+  bool can_go_east(int x, int y);
+  bool can_go_west(int x, int y);
 };
 
 #endif

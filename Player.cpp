@@ -159,7 +159,7 @@ unsigned int PLAYER_FRAMES[PLAYER_FRAME_COUNT*(PLAYER_SIZE*PLAYER_SIZE)] = {
     0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,
 };
 
-Player::Player(Collider c, int x, int y): Sprite(PLAYER_FRAMES, PLAYER_FRAME_COUNT, x, y, PLAYER_SIZE, PLAYER_SIZE) {
+Player::Player(Collider *c, int x, int y): Sprite(PLAYER_FRAMES, PLAYER_FRAME_COUNT, x, y, PLAYER_SIZE, PLAYER_SIZE) {
   current_frame = 0;
   direction = East;
   dead = false;

@@ -39,7 +39,7 @@ void Ghost::update(unsigned int frame) {
 }
 
 void Ghost::move() {
-    if (coll.atIntersection(position.x, position.y)) {
+    if (coll.at_intersection(position.x, position.y)) {
         // Chose Direction
     } else {
         // Move Forward

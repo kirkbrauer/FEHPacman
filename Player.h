@@ -21,9 +21,9 @@ class Player: public Sprite {
     unsigned int last_anim_frame;
     unsigned int move_anim_frame;
     int move_anim_direction;
-    Collider coll;
+    Collider *coll;
   public:
-    Player(Collider coll, int x, int y);
+    Player(Collider *coll, int x, int y);
     void update(unsigned int frame);
     void move(Direction dir);
     void stop();
