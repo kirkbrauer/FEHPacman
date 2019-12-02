@@ -5,21 +5,19 @@
 #include "Sprite.h"
 #include "FEHLCD.h"
 
-Sprite::Sprite(unsigned int *f, unsigned int fc, int x, int y, int width, int height, unsigned int s) {
+Sprite::Sprite(unsigned int *f, unsigned int fc, int x, int y, int width, int height) {
   frames = f;
   frame_count = fc;
   current_frame = 0;
-  scale = s;
   size = Size { width, height };
   position = Position { x, y };
   bounds = Bounds(&position, &size);
 }
 
-Sprite::Sprite(unsigned int *f, unsigned int fc, Position pos, Size sz, unsigned int s) {
+Sprite::Sprite(unsigned int *f, unsigned int fc, Position pos, Size sz) {
   frames = f;
   frame_count = fc;
   current_frame = 0;
-  scale = s;
   size = sz;
   position = pos;
   bounds = Bounds(&position, &size);
@@ -51,10 +49,6 @@ unsigned int Sprite::get_frame_count() {
 
 Size *Sprite::get_size() {
   return &size;
-}
-
-unsigned int Sprite::get_scale() {
-  return scale;
 }
 
 Bounds *Sprite::get_bounds() {

@@ -7,6 +7,7 @@
 
 #include "Sprite.h"
 #include "Direction.h"
+#include "Collider.h"
 
 #define PLAYER_SIZE 16
 #define PLAYER_FRAME_COUNT 9
@@ -20,8 +21,9 @@ class Player: public Sprite {
     unsigned int last_anim_frame;
     unsigned int move_anim_frame;
     int move_anim_direction;
+    Collider coll;
   public:
-    Player(int x, int y, unsigned int scale);
+    Player(Collider coll, int x, int y);
     void update(unsigned int frame);
     void move(Direction dir);
     void stop();

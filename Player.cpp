@@ -159,7 +159,7 @@ unsigned int PLAYER_FRAMES[PLAYER_FRAME_COUNT*(PLAYER_SIZE*PLAYER_SIZE)] = {
     0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,
 };
 
-Player::Player(int x, int y, unsigned int scale): Sprite(PLAYER_FRAMES, PLAYER_FRAME_COUNT, x, y, PLAYER_SIZE, PLAYER_SIZE, scale) {
+Player::Player(Collider c, int x, int y): Sprite(PLAYER_FRAMES, PLAYER_FRAME_COUNT, x, y, PLAYER_SIZE, PLAYER_SIZE) {
   current_frame = 0;
   direction = East;
   dead = false;
@@ -167,6 +167,7 @@ Player::Player(int x, int y, unsigned int scale): Sprite(PLAYER_FRAMES, PLAYER_F
   move_anim_direction = 1;
   last_anim_frame = 0;
   move_anim_frame = 0;
+  coll = c;
 }
 
 void Player::update(unsigned int frame) {

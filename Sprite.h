@@ -22,12 +22,11 @@ class Sprite: public Entity {
     Bounds bounds;
     Size size;
     unsigned int frame_count;
-    unsigned int scale;
     unsigned int current_frame;
     unsigned int *get_frame();
   public:
-    Sprite(unsigned int *f, unsigned int fc, int x, int y, int width, int height, unsigned int s = 1);
-    Sprite(unsigned int *f, unsigned int fc, Position pos, Size sz, unsigned int s = 1);
+    Sprite(unsigned int *f, unsigned int fc, int x, int y, int width, int height);
+    Sprite(unsigned int *f, unsigned int fc, Position pos, Size sz);
     Position* get_position();
     Bounds* get_bounds();
     Size* get_size();
