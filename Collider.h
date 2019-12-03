@@ -1,15 +1,16 @@
-#ifndef FEHGAMECLASSES_COLLIDER_H
-#define FEHGAMECLASSES_COLLIDER_H
+#ifndef FEHPACMAN_COLLIDER_H
+#define FEHPACMAN_COLLIDER_H
 
 #include "Size.h"
 
 class Collider {
 private:
-  int *map;
+  unsigned int *map;
+  unsigned int block_size;
   Size size;
 public:
   Collider();
-  Collider(int *map, int width, int height);
+  Collider(unsigned int *map, unsigned int block_size, int width, int height);
   bool at_intersection(int x, int y);
   bool can_go_north(int x, int y);
   bool can_go_south(int x, int y);

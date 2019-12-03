@@ -2,8 +2,8 @@
 // Created by Kirk Brauer on 11/21/19.
 //
 
-#ifndef FEHGAMECLASSES_SPRITE_H
-#define FEHGAMECLASSES_SPRITE_H
+#ifndef FEHPACMAN_SPRITE_H
+#define FEHPACMAN_SPRITE_H
 
 #include "Entity.h"
 #include "Position.h"
@@ -15,6 +15,13 @@ struct RGB {
   unsigned int r, g, b;
 };
 
+enum Rotation {
+  Deg0 = 0,
+  Deg90 = 90,
+  Deg180 = 180,
+  Deg270 = 270
+};
+
 class Sprite: public Entity {
   protected:
     unsigned int *frames;
@@ -24,9 +31,11 @@ class Sprite: public Entity {
     unsigned int frame_count;
     unsigned int current_frame;
     unsigned int *get_frame();
+    void draw_pixel(unsigned int x, unsigned int y, unsigned int color);
+    Rotation rotation;
   public:
-    Sprite(unsigned int *f, unsigned int fc, int x, int y, int width, int height);
-    Sprite(unsigned int *f, unsigned int fc, Position pos, Size sz);
+    Sprite(unsigned int *f, unsigned int fc, int x, int y, int width, int height, Rotation rot = Deg0);
+    Sprite(unsigned int *f, unsigned int fc, Position pos, Size sz, Rotation rot = Deg0);
     Position* get_position();
     Bounds* get_bounds();
     Size* get_size();
@@ -40,4 +49,4 @@ class Sprite: public Entity {
 };
 
 
-#endif //FEHGAMECLASSES_SPRITE_H
+#endif //FEHPACMAN_SPRITE_H

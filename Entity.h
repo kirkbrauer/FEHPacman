@@ -2,8 +2,8 @@
 // Created by Kirk Brauer on 11/21/19.
 //
 
-#ifndef FEHGAMECLASSES_ENTITY_H
-#define FEHGAMECLASSES_ENTITY_H
+#ifndef FEHPACMAN_ENTITY_H
+#define FEHPACMAN_ENTITY_H
 
 
 class Entity {
@@ -13,4 +13,4 @@ class Entity {
 };
 
 
-#endif //FEHGAMECLASSES_ENTITY_H
+#endif //FEHPACMAN_ENTITY_H

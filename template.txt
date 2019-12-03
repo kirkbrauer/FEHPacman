@@ -13,3 +13,7 @@ Dot.h
 Dot.cpp
 Ghost.h
 Ghost.cpp
+Tile.h
+Tile.cpp
+Collider.cpp
+Collider.h

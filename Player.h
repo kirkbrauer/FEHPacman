@@ -2,15 +2,15 @@
 // Created by Kirk Brauer on 11/22/19.
 //
 
-#ifndef FEHGAMECLASSES_PLAYER_H
-#define FEHGAMECLASSES_PLAYER_H
+#ifndef FEHPACMAN_PLAYER_H
+#define FEHPACMAN_PLAYER_H
 
 #include "Sprite.h"
 #include "Direction.h"
 #include "Collider.h"
 
 #define PLAYER_SIZE 16
-#define PLAYER_FRAME_COUNT 9
+#define PLAYER_FRAME_COUNT 3
 
 class Player: public Sprite {
   private:
@@ -31,4 +31,4 @@ class Player: public Sprite {
 };
 
 
-#endif //FEHGAMECLASSES_PLAYER_H
+#endif //FEHPACMAN_PLAYER_H

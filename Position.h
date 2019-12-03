@@ -2,8 +2,8 @@
 // Created by Kirk Brauer on 11/21/19.
 //
 
-#ifndef FEHGAMECLASSES_POSITION_H
-#define FEHGAMECLASSES_POSITION_H
+#ifndef FEHPACMAN_POSITION_H
+#define FEHPACMAN_POSITION_H
 
 
 struct Position {
@@ -11,4 +11,4 @@ struct Position {
 };
 
 
-#endif //FEHGAMECLASSES_POSITION_H
+#endif //FEHPACMAN_POSITION_H

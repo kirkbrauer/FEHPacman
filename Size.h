@@ -2,11 +2,11 @@
 // Created by Kirk Brauer on 11/21/19.
 //
 
-#ifndef FEHGAMECLASSES_SIZE_H
-#define FEHGAMECLASSES_SIZE_H
+#ifndef FEHPACMAN_SIZE_H
+#define FEHPACMAN_SIZE_H
 
 struct Size {
   int width, height;
 };
 
-#endif //FEHGAMECLASSES_SIZE_H
+#endif //FEHPACMAN_SIZE_H

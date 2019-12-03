@@ -2,8 +2,8 @@
 // Created by Kirk Brauer on 11/22/19.
 //
 
-#ifndef FEHGAMECLASSES_DIRECTION_H
-#define FEHGAMECLASSES_DIRECTION_H
+#ifndef FEHPACMAN_DIRECTION_H
+#define FEHPACMAN_DIRECTION_H
 
 enum Direction {
   North,
@@ -12,4 +12,4 @@ enum Direction {
   West
 };
 
-#endif //FEHGAMECLASSES_DIRECTION_H
+#endif //FEHPACMAN_DIRECTION_H

@@ -2,8 +2,8 @@
 // Created by Brian Duffy on 12/02/19.
 //
 
-#ifndef FEHGAMECLASSES_GHOST_H
-#define FEHGAMECLASSES_GHOST_H
+#ifndef FEHPACMAN_GHOST_H
+#define FEHPACMAN_GHOST_H
 
 #include "Sprite.h"
 #include "Collider.h"
@@ -32,4 +32,4 @@ public:
   void kill();
 };
 
-#endif // FEHGAMECLASSES_GHOST_H
+#endif // FEHPACMAN_GHOST_H

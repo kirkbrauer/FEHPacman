@@ -2,8 +2,8 @@
 // Created by Kirk Brauer on 11/21/19.
 //
 
-#ifndef FEHGAMECLASSES_BOUNDS_H
-#define FEHGAMECLASSES_BOUNDS_H
+#ifndef FEHPACMAN_BOUNDS_H
+#define FEHPACMAN_BOUNDS_H
 
 
 #include "Position.h"
@@ -23,4 +23,4 @@ class Bounds {
 };
 
 
-#endif //FEHGAMECLASSES_BOUNDS_H
+#endif //FEHPACMAN_BOUNDS_H

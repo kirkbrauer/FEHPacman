@@ -2,8 +2,8 @@
 // Created by Kirk Brauer on 12/02/19.
 //
 
-#ifndef FEHGAMECLASSES_DOT_H
-#define FEHGAMECLASSES_DOT_H
+#ifndef FEHPACMAN_DOT_H
+#define FEHPACMAN_DOT_H
 
 #include "Sprite.h"
 
@@ -23,4 +23,4 @@ class Dot: public Sprite {
     void render();
 };
 
-#endif //FEHGAMECLASSES_DOT_H
+#endif //FEHPACMAN_DOT_H
