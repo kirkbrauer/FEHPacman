@@ -16,12 +16,11 @@ bool Collider::can_go_north(int x, int y) {
 }
 
 bool Collider::can_go_south(int x, int y) {
-  return y < size.height && map[x*(y+1) ];
+  return y < size.height && map[x*(y+1)];
 }
 
 bool Collider::can_go_east(int x, int y) {
   return x < size.width && map[(x+1)*y];
-  
 }
 
 bool Collider::can_go_west(int x, int y) {
