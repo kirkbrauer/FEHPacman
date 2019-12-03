@@ -81,8 +81,10 @@ void Player::update(unsigned int frame) {
 }
 
 void Player::move(Direction dir) {
+  if (coll->at_intersection(position.x, position.y)) {
+    direction = dir;
+  }
   moving = true;
-  direction = dir;
   switch  (direction) {
     case North:
       if (coll->can_go_north(position.x, position.y))

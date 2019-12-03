@@ -97,7 +97,7 @@ int main() {
   Dot dot;
   Tile tile;
 
-  Player player(&paths, 5, 0);
+  Player player(&paths, 8, 8);
   Ghost ghosts[1];
   
   // TODO : Give Real Positions on Grid
