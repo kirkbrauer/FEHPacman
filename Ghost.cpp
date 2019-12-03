@@ -22,14 +22,14 @@ static unsigned int GHOSTS[NUM_GHOST*(GHOST_SIZE*GHOST_SIZE)] = {
     0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000
 };
 
-Ghost::Ghost(Collider *c, Player *p, int ghost, int x, int y, int width, int height) : Sprite(GHOSTS+ghost*(GHOST_SIZE*GHOST_SIZE), 1, x, y, width, height), p(p) {
+Ghost::Ghost(Collider *c, Player *p, int ghost, int x, int y) : Sprite(GHOSTS+ghost*(GHOST_SIZE*GHOST_SIZE), 1, x, y, GHOST_SIZE, GHOST_SIZE), p(p) {
     mode = CHASE;
     modeTime = 0;
     alive = false;
     coll = c;
 }
 
-Ghost::Ghost(Collider *c, Player *p, int ghost, Position pos, Size sz) : Sprite(GHOSTS+ghost*(GHOST_SIZE*GHOST_SIZE), 1, pos, sz), p(p) {
+Ghost::Ghost(Collider *c, Player *p, int ghost, Position pos) : Sprite(GHOSTS+ghost*(GHOST_SIZE*GHOST_SIZE), 1, pos, Size{GHOST_SIZE,GHOST_SIZE}), p(p) {
     mode = CHASE;
     modeTime = 0;
     alive = false;
@@ -46,6 +46,7 @@ float Ghost::distanceToPlayer(int xOff, int yOff) {
 }
 
 void Ghost::move() {
+    if (!alive) return;
     if (coll->at_intersection(position.x, position.y)) {
         // Chose Direction
         float distance = 10000000; // TODO : Better than default high value

@@ -5,11 +5,11 @@
 
 class Collider {
 private:
-  int *map;
+  const int *map;
   Size size;
 public:
   Collider();
-  Collider(int *map, int width, int height);
+  Collider(const int *map, int width, int height);
   bool at_intersection(int x, int y);
   bool can_go_north(int x, int y);
   bool can_go_south(int x, int y);

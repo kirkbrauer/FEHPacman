@@ -28,8 +28,8 @@ private:
   Player *p;
   float distanceToPlayer(int xOff, int yOff);
 public:
-  Ghost(Collider *coll, Player *p, int ghost, int x, int y, int width, int height);
-  Ghost(Collider *coll, Player *p, int ghost, Position pos, Size sz);
+  Ghost(Collider *coll, Player *p, int ghost, int x, int y);
+  Ghost(Collider *coll, Player *p, int ghost, Position pos);
   void update(unsigned int frame);
   void move();
   void kill();

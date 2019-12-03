@@ -2,7 +2,7 @@
 
 Collider::Collider() {}
 
-Collider::Collider(int *m, int width, int height) {
+Collider::Collider(const int *m, int width, int height) {
   map = m;
   size = Size { width, height };
 }
