@@ -11,3 +11,7 @@ Sprite.cpp
 Sprite.h
 Dot.h
 Dot.cpp
+Collider.h
+Collider.cpp
+Ghost.h
+Ghost.cpp

@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Dot.h"
 #include "Tile.h"
+#include "Ghost.h"
 
 #define FG_COUNT 5
 #define DG_COUNT 754
@@ -140,8 +141,17 @@ int main() {
   }
 
   Player player(&paths, 5, 0);
+  Collider coll = Collider(path_data, 8, 28, 31);
+  Player player(NULL, 5, 0);
+  Ghost *ghosts = (Ghost *) calloc(4, sizeof(Ghost));
+  
+  // TODO : Give Real Positions on Grid
+  ghosts[0] = Ghost(&coll, &player, 0, 16, 16);
+  ghosts[1] = Ghost(&coll, &player, 1, 32, 16);
+  ghosts[2] = Ghost(&coll, &player, 2, 16, 32);
+  ghosts[3] = Ghost(&coll, &player, 3, 32, 32);
 
-  unsigned int frame = 0;
+  unsigned long long frame = 0;
 
   while (!LCD.Touch(&x, &y));
 
@@ -184,6 +194,12 @@ int main() {
     player.move(dir);
     player.update(frame);
     player.render();
+
+    for (int i = 0; i < 4; i++) {
+      ghosts[i].move();
+      ghosts[i].update(frame);
+      ghosts[i].render();
+    }
 
     frame++;
     Sleep(15);
