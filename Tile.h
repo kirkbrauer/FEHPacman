@@ -31,4 +31,4 @@ class Tile: public Sprite {
     void update(unsigned int frame);
 };
 
-#endif FEHPACMAN_TILE_H
+#endif // FEHPACMAN_TILE_H

@@ -9,7 +9,7 @@ Collider::Collider(unsigned int *m, unsigned int bs, int width, int height) {
 }
 
 bool Collider::at_intersection(int x, int y) {
-  return x % 8 == 0 && y % 8 == 0;
+  return x % block_size == 0 && y % block_size == 0;
 }
 
 bool Collider::can_go_north(int x, int y) {
@@ -21,10 +21,9 @@ bool Collider::can_go_south(int x, int y) {
 }
 
 bool Collider::can_go_east(int x, int y) {
-  return x < size.width*block_size && map[(x/block_size) + (y/block_size) * size.width];
-  
+  return x < size.width*block_size && map[(x/block_size+1) + (y/block_size) * size.width];
 }
 
 bool Collider::can_go_west(int x, int y) {
-  return x > 0 && map[((x/block_size) - 1) + (y/block_size) * size.width];
+  return x > 0 && map[((x/block_size)-1) + (y/block_size) * size.width];
 }

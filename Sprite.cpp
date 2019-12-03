@@ -3,8 +3,8 @@
 //
 
 #include "Sprite.h"
-//#include "FEHLCD.h"
-#include "raylib.h"
+#include "FEHLCD.h"
+//#include "raylib.h"
 
 Sprite::Sprite(unsigned int *f, unsigned int fc, int x, int y, int width, int height, Rotation rot) {
   frames = f;
@@ -63,12 +63,13 @@ unsigned int Sprite::get_current_frame() {
 }
 
 void Sprite::draw_pixel(unsigned int x, unsigned int y, unsigned int hex) {
-  Color color;
+  /*Color color;
   color.r = hex / 256 / 256 % 256;
   color.g = hex / 256 % 256;
   color.b = hex % 256;
-  color.a = 255;
-  DrawPixel(position.x + x, position.y + y, color);
+  color.a = 255;*/
+  LCD.SetFontColor(hex);
+  LCD.DrawPixel(position.x + x, position.y + y);
 }
 
 void Sprite::render() {

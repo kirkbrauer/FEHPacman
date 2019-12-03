@@ -10,8 +10,8 @@
 #include "Direction.h"
 #include "Player.h"
 
-#define GHOST_SIZE    16
-#define NUM_GHOST     4
+#define GHOST_SIZE 16
+#define GHOST_FRAME_COUNT 1
 
 enum GhostMode {
   CHASE,
@@ -28,6 +28,7 @@ private:
   Player *p;
   float distanceToPlayer(int xOff, int yOff);
 public:
+  Ghost();
   Ghost(Collider *coll, Player *p, int ghost, int x, int y);
   Ghost(Collider *coll, Player *p, int ghost, Position pos);
   void update(unsigned int frame);
