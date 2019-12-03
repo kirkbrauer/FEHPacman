@@ -54,28 +54,22 @@ void Ghost::move() {
         LCD.SetFontColor(WHITE);
         float distance = 10000000; // TODO : Better than default high value
         enum Direction min;
-        if (coll->can_go_north(position.x, position.y)) {
+        if (coll->can_go_north(position.x, position.y) && dir != South) {
             min = North;
             distance = distanceToPlayer(0, 8);
         }
-        if (coll->can_go_south(position.x, position.y) && distanceToPlayer(0, -8) < distance) {
+        if (coll->can_go_south(position.x, position.y) && distanceToPlayer(0, -8) < distance && dir != North) {
             min = South;
             distance = distanceToPlayer(0, -8);
         }
-        if (coll->can_go_east(position.x, position.y) && distanceToPlayer(8, 0) < distance) {
+        if (coll->can_go_east(position.x, position.y) && distanceToPlayer(8, 0) < distance && dir != West) {
             min = East;
             distance = distanceToPlayer(8, 0);
         }
-        if (coll->can_go_west(position.x, position.y) && distanceToPlayer(-8, 0) < distance) {
+        if (coll->can_go_west(position.x, position.y) && distanceToPlayer(-8, 0) < distance && dir != East) {
             min = West;
             distance = distanceToPlayer(-8, 0);
         }
-        /*LCD.Clear();
-        LCD.WriteLine(coll->can_go_north(position.x, position.y));
-        LCD.WriteLine(coll->can_go_south(position.x, position.y));
-        LCD.WriteLine(coll->can_go_east(position.x, position.y));
-        LCD.WriteLine(coll->can_go_west(position.x, position.y));
-        Sleep(2000);*/
         dir = min;
     }
     // Move Forward
