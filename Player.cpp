@@ -87,19 +87,19 @@ void Player::move(Direction dir) {
   moving = true;
   switch  (direction) {
     case North:
-      if (coll->can_go_north(position.x, position.y))
+      if (!(coll->at_intersection(position.x, position.y) && !coll->can_go_north(position.x, position.y)))
         position.y -= 1;
       break;
     case East:
-      if (coll->can_go_east(position.x, position.y))
+      if (!(coll->at_intersection(position.x, position.y) && !coll->can_go_east(position.x, position.y)))
         position.x += 1;
       break;
     case South:
-      if (coll->can_go_south(position.x, position.y))
+      if (!(coll->at_intersection(position.x, position.y) && !coll->can_go_south(position.x, position.y)))
         position.y += 1;
       break;
     case West:
-      if (coll->can_go_west(position.x, position.y))
+      if (!(coll->at_intersection(position.x, position.y) && !coll->can_go_west(position.x, position.y)))
         position.x -= 1;
       break;
   }
