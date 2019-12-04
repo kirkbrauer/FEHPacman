@@ -59,7 +59,7 @@ unsigned int path_data[MAP_WIDTH*MAP_HEIGHT] = {
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,
   0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
-  0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
+  0,2,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,2,0,
   0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
   0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
   0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,
@@ -70,7 +70,7 @@ unsigned int path_data[MAP_WIDTH*MAP_HEIGHT] = {
   0,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,0,0,
   0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,
   0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,
-  1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,
+  0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,
   0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,
   0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,
   0,0,0,0,0,0,1,0,0,1,1,1,1,1,1,1,1,1,1,0,0,1,0,0,0,0,0,0,
@@ -79,7 +79,7 @@ unsigned int path_data[MAP_WIDTH*MAP_HEIGHT] = {
   0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,
   0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
   0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
-  0,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,0,
+  0,2,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,2,0,
   0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,
   0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,
   0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0,
@@ -201,7 +201,7 @@ void game() {
     }
   }
 
-  // Render Dots
+  // Initially render Dots
   for (int x = 0; x < MAP_WIDTH; x++) {
     for (int y = 0; y < MAP_HEIGHT; y++) {
       if (dot_data[y*MAP_WIDTH + x] != 0) {
@@ -214,6 +214,7 @@ void game() {
 
   // Dots eaten by the player
   int dotsEaten = 0;
+  int ghostsAlive = GHOST_COUNT;
 
   // Main game loop
   while (true) {
@@ -240,55 +241,96 @@ void game() {
     if (paths.at_intersection(p->x, p->y)) {
       // Player over dot
       if (dot_data[p->x/8+p->y/8*MAP_WIDTH] != 0) {
+        // Check if the dot was a powerup
         if (dot_data[p->x/8+p->y/8*MAP_WIDTH] == 2) {
           // Make the ghosts attempt to hide
           for (int i = 0; i < GHOST_COUNT; i++) {
             ghosts[i].set_mode(Hide);
           }
+          // Set the time when the ghosts started hiding
           hide_start = frame;
         }
         dot_data[p->x/8+p->y/8*MAP_WIDTH] = 0;
         // Increase Score
         player.setScore(player.getScore() + 100);
+        // Count the dots that have been eaten
         dotsEaten++;
-        // Check if any dots left
-        if (dotsEaten >= 258) {
-          gameOver(player.getScore(), true);
-          break;
-        }
       }
     }
 
     // For each ghost in the game
     for (int i = 0; i < 4; i++) {
-      if (!(frame % 10 == 0)) {
-        ghosts[i].update(frame);
-      }
-      // Check if ghost kills player
-      if (ghosts[i].distanceToPlayer(0, 0) < 8) {
-        // Ghost kills player
-        gameOver(player.getScore(), false);
-        break;
-      }
-
-      Position *p = ghosts[i].get_position();
-      // Replace Clobbered Dots
-      if (paths.at_intersection(p->x, p->y)) {
-        // Place dots on each side
-        for (int j = -1; j <= 1; j++) {
-          for (int k = -1; k <= 1; k++) {
-            // Bounds Checking
-            if ((p->x+j)/8+(p->y+k)/8*MAP_WIDTH < 0 || (p->x+j)/8+(p->y+k)/8*MAP_WIDTH > MAP_WIDTH*MAP_HEIGHT)
-              continue;
-            // Draw dot if it exists
-            if (dot_data[(p->x+j)/8+(p->y+k)/8*MAP_WIDTH] == 1) {
-              dot = Dot(x*8+4, y*8+4, big);
-              dot.render();
-            }
+      // Only render and update ghosts that are alive
+      if (ghosts[i].is_alive()) {
+        // Update the ghost position
+        if (!(frame % 10 == 0)) {
+          ghosts[i].update(frame);
+        }
+        // Check if ghost kills player
+        if (ghosts[i].distanceToPlayer(0, 0) < 8) {
+          if (ghosts[i].get_mode() == Hide) {
+            // Kill the ghost
+            ghosts[i].kill();
+            // Reduce the number of ghosts alive
+            ghostsAlive--;
+            // Update the player score
+            player.setScore(player.getScore() + 500);
+          } else {
+            // Ghost kills player
+            gameOver(player.getScore(), false);
+            break;
           }
         }
-        ghosts[i].render();
+
+        Position *p = ghosts[i].get_position();
+        // Replace Clobbered Dots
+        if (paths.at_intersection(p->x, p->y)) {
+          // Place dots on each side
+          for (int j = -1; j <= 1; j++) {
+            for (int k = -1; k <= 1; k++) {
+              // Bounds Checking
+              if ((p->x+j)/8+(p->y+k)/8*MAP_WIDTH < 0 || (p->x+j)/8+(p->y+k)/8*MAP_WIDTH > MAP_WIDTH*MAP_HEIGHT)
+                continue;
+              // Draw dot if it exists
+              if (dot_data[(p->x+j)/8+(p->y+k)/8*MAP_WIDTH] != 0) {
+                // Draw a big dot if big is specified
+                big = dot_data[(p->x+j)/8+(p->y+k)/8*MAP_WIDTH] == 2;
+                // Construct a new dot
+                dot = Dot(x*8+4, y*8+4, big);
+                // Render the dot
+                dot.render();
+              }
+            }
+          }
+          // Render the ghost
+          ghosts[i].render();
+        }
       }
+    }
+
+    // Check if any dots left
+    if (dotsEaten >= 258) {
+      gameOver(player.getScore(), true);
+      break;
+    }
+
+    // Check if any ghosts are left alive
+    if (ghostsAlive == 0) {
+      gameOver(player.getScore(), true);
+      break;
+    }
+
+    // Stop the ghosts from hiding after a specific duration
+    if (frame - hide_start > GHOST_HIDE_DURATION) {
+      for (int i = 0; i < GHOST_COUNT; i++) {
+        // Set the ghost modes to chase
+        ghosts[i].set_mode(Chase);
+      }
+    }
+
+    // For each ghost in the game
+    for (int i = 0; i < GHOST_COUNT; i++) {
+      
     }
 
     // Score tracking
