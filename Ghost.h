@@ -12,7 +12,7 @@
 
 // Sizes for array of pixels in bitmap
 #define GHOST_SIZE 16
-#define GHOST_FRAME_COUNT 1
+#define GHOST_FRAME_COUNT 2
 
 // Current Mode Ghost is In (Unused)
 enum GhostMode {
@@ -67,6 +67,8 @@ public:
   void move();
   // Kills the ghost
   void kill();
+  // Renders the ghost
+  void render();
 };
 
 #endif // FEHPACMAN_GHOST_H
