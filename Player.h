@@ -28,8 +28,6 @@ class Player: public Sprite {
     unsigned int move_anim_frame;
     // The direction of the animation
     int move_anim_direction;
-    // The player score
-    int score;
     // The player collider
     Collider *coll;
   public:

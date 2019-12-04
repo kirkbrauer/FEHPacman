@@ -55,7 +55,7 @@ void Ghost::move() {
     if (coll->at_intersection(position.x, position.y)) {
         // Chose Direction
         LCD.SetFontColor(WHITE);
-        float distance = 10000000; // TODO : Better than default high value
+        float distance = 10000000; // TODO: Better than default high value
         // Find the shortest distance to the player where the Ghost can go
         enum Direction min;
         if (coll->can_go_north(position.x, position.y) && dir != South) {
@@ -78,16 +78,16 @@ void Ghost::move() {
     }
     // Move Forward in the selected direction
     switch  (dir) {
-        case North:
+    case North:
         position.y -= 1;
         break;
-        case East:
+    case East:
         position.x += 1;
         break;
-        case South:
+    case South:
         position.y += 1;
         break;
-        case West:
+    case West:
         position.x -= 1;
         break;
     }
