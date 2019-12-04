@@ -26,15 +26,15 @@ unsigned int ghost_frames[GHOST_FRAME_COUNT*(GHOST_SIZE*GHOST_SIZE)] = {
 
 Ghost::Ghost() : Sprite(ghost_frames, GHOST_FRAME_COUNT, 0, 0, GHOST_SIZE, GHOST_SIZE) {}
 
-Ghost::Ghost(Collider *c, Player *p, int ghost, int x, int y) : Sprite(ghost_frames, GHOST_FRAME_COUNT, x, y, GHOST_SIZE, GHOST_SIZE), p(p) {
-    mode = CHASE;
+Ghost::Ghost(Collider *c, Player *p, int x, int y) : Sprite(ghost_frames, GHOST_FRAME_COUNT, x, y, GHOST_SIZE, GHOST_SIZE), p(p) {
+    mode = Chase;
     modeTime = 0;
     alive = true;
     coll = c;
 }
 
-Ghost::Ghost(Collider *c, Player *p, int ghost, Position pos) : Sprite(ghost_frames, GHOST_FRAME_COUNT, pos, Size{GHOST_SIZE,GHOST_SIZE}), p(p) {
-    mode = CHASE;
+Ghost::Ghost(Collider *c, Player *p, Position pos) : Sprite(ghost_frames, GHOST_FRAME_COUNT, pos, Size{GHOST_SIZE,GHOST_SIZE}), p(p) {
+    mode = Chase;
     modeTime = 0;
     alive = true;
     coll = c;
@@ -43,16 +43,20 @@ Ghost::Ghost(Collider *c, Player *p, int ghost, Position pos) : Sprite(ghost_fra
 void Ghost::update(unsigned int frame) {}
 
 float Ghost::distanceToPlayer(int xOff, int yOff) {
+    // Calculate the distance to the player using distance formula
     float val = pow(p->get_position()->x-position.x-xOff, 2) + pow(p->get_position()->y-position.y+yOff, 2);
     return sqrt(val);
 }
 
 void Ghost::move() {
+    // Don't move the ghost if it is dead
     if (!alive) return;
+    // Check if we are at an intersection
     if (coll->at_intersection(position.x, position.y)) {
         // Chose Direction
         LCD.SetFontColor(WHITE);
         float distance = 10000000; // TODO : Better than default high value
+        // Find the shortest distance to the player where the Ghost can go
         enum Direction min;
         if (coll->can_go_north(position.x, position.y) && dir != South) {
             min = North;
@@ -72,7 +76,7 @@ void Ghost::move() {
         }
         dir = min;
     }
-    // Move Forward
+    // Move Forward in the selected direction
     switch  (dir) {
         case North:
         position.y -= 1;

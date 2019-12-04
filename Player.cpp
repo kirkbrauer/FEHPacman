@@ -4,6 +4,7 @@
 
 #include "Player.h"
 
+// The player animation frames
 unsigned int PLAYER_FRAMES[PLAYER_FRAME_COUNT*(PLAYER_SIZE*PLAYER_SIZE)] = {
     0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,
     0x000000,0x000000,0x000000,0x000000,0x000000,0xffff00,0xffff00,0xffff00,0xffff00,0xffff00,0x000000,0x000000,0x000000,0x000000,0x000000,0x000000,
@@ -66,24 +67,49 @@ Player::Player(Collider *c, int x, int y): Sprite(PLAYER_FRAMES, PLAYER_FRAME_CO
   last_anim_frame = 0;
   move_anim_frame = 0;
   coll = c;
+  score = 0;
 }
 
 void Player::update(unsigned int frame) {
+  // Every two frames, change the animation frame
   if ((frame - last_anim_frame) >= 2) {
+    // Update the last animation frame
     last_anim_frame = frame;
+    // Add the animation direction to the animation frame
     move_anim_frame += move_anim_direction;
     if (move_anim_frame == 2) {
+      // If we are at the last frame, switch direction
       move_anim_direction = -1;
     } else if (move_anim_frame == 0) {
+      // If we are at the first frame, switch direction
       move_anim_direction = 1;
     }
   }
 }
 
 void Player::move(Direction dir) {
+  // Allow the player to move if at an intersection
   if (coll->at_intersection(position.x, position.y)) {
-    direction = dir;
+    switch(dir) {
+    case North:
+      if (coll->can_go_north(position.x, position.y))
+        direction = dir;
+      break;
+    case East:
+      if (coll->can_go_east(position.x, position.y))
+        direction = dir;
+      break;
+    case South:
+      if (coll->can_go_south(position.x, position.y))
+        direction = dir;
+      break;
+    case West:
+      if (coll->can_go_west(position.x, position.y))
+        direction = dir;
+      break;
+    }
   }
+  // Set moving to true
   moving = true;
   switch  (direction) {
     case North:
@@ -110,9 +136,12 @@ void Player::stop() {
 }
 
 void Player::render() {
+  // Render the player
   if (move_anim_frame == 2 || !moving) {
+    // Render the empty state when not moving
     current_frame = 0;
   } else {
+    // Otherwise, rotate the player in the correct direction
     current_frame = move_anim_frame + 1;
     switch  (direction) {
       case North:
@@ -129,5 +158,14 @@ void Player::render() {
         break;
     }
   }
+  // Render the sprite
   Sprite::render();
+}
+
+int Player::getScore() {
+  return score;
+}
+
+void Player::setScore(int s) {
+  score = s;
 }

@@ -5,6 +5,7 @@
 #ifndef FEHPACMAN_SIZE_H
 #define FEHPACMAN_SIZE_H
 
+// Represents size of an object or structure
 struct Size {
   int width, height;
 };

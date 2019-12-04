@@ -1,8 +1,5 @@
 main.cpp
-Bounds.cpp
-Bounds.h
 Direction.h
-Entity.h
 Player.cpp
 Player.h
 Position.h

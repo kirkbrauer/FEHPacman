@@ -1,5 +1,6 @@
 #include "Dot.h"
 
+// Bitmap of big and small dots
 unsigned int DOT_FRAMES[DOT_FRAME_COUNT*(DOT_SIZE*DOT_SIZE)] = {
     0xff00f5,0xff00f5,0xff00f5,0xff00f5,0xff00f5,0xff00f5,0xff00f5,0xff00f5,
     0xff00f5,0xff00f5,0xff00f5,0xff00f5,0xff00f5,0xff00f5,0xff00f5,0xff00f5,
@@ -20,10 +21,13 @@ unsigned int DOT_FRAMES[DOT_FRAME_COUNT*(DOT_SIZE*DOT_SIZE)] = {
     0xff00f5,0xff00f5,0x666666,0x666666,0x666666,0x666666,0xff00f5,0xff00f5,
 };
 
+// Defualt constructor
 Dot::Dot(): Sprite(DOT_FRAMES, DOT_FRAME_COUNT, -DOT_SIZE, -DOT_SIZE, DOT_SIZE, DOT_SIZE) {}
 
+// Standard Constructor
 Dot::Dot(int x, int y, bool b): Sprite(DOT_FRAMES, DOT_FRAME_COUNT, x, y, DOT_SIZE, DOT_SIZE) {
   big = b;
+  // Set the current frame based on if the dot is big or not
   if (big) {
     current_frame = 1;
   } else {
@@ -31,16 +35,15 @@ Dot::Dot(int x, int y, bool b): Sprite(DOT_FRAMES, DOT_FRAME_COUNT, x, y, DOT_SI
   }
 }
 
-void Dot::update(unsigned int frame) {}
-
+// Setter for Big
 void Dot::set_big(bool b) {
   big = b;
 }
 
-void Dot::render() {
-  Sprite::render();
-}
+// Standard Sprite Methods
+void Dot::update(unsigned int frame) {}
 
-void Dot::eat() {
-  eaten = true;
+void Dot::render() {
+  // Just render the dot
+  Sprite::render();
 }

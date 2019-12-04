@@ -10,6 +10,7 @@
 #define TILE_SIZE 8
 #define TILE_FRAME_COUNT 11
 
+// Represents the tile type
 enum TileType {
   None = 0,
   DoubleStraight = 1,
@@ -17,17 +18,23 @@ enum TileType {
   DoubleInnerCorner = 3,
   SingleInnerCorner = 4,
   OuterCorner = 5,
-  DoubleSplitCorner = 6,
-  DoubleSplitCornerMirror = 7,
-  SquareCorner = 8,
-  SquareEnd = 9,
-  Door = 10
+  SquareCorner = 6
 };
 
+/**
+ * A sprite for each tile of the map.
+ */
 class Tile: public Sprite {
   public:
+    // Default constructor
     Tile();
+    /**
+     * The primary Tile constructor.
+     * @param x The x position of the tile.
+     * @param y The y position of the tile.
+     */
     Tile(int x, int y, TileType type, Rotation rot);
+    // Updates the tile each frame
     void update(unsigned int frame);
 };
 
