@@ -261,7 +261,9 @@ void game() {
 
     // For each ghost in the game
     for (int i = 0; i < 4; i++) {
-      ghosts[i].update(frame);
+      if (!(frame % 10 == 0)) {
+        ghosts[i].update(frame);
+      }
       // Check if ghost kills player
       if (ghosts[i].distanceToPlayer(0, 0) < 8) {
         // Ghost kills player
