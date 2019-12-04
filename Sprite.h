@@ -66,8 +66,8 @@ class Sprite {
     void set_current_frame(unsigned int frame);
     unsigned int get_current_frame();
     unsigned int get_frame_count();
-    unsigned int get_scale();
     void render();
+    void update(unsigned int frame) {}
 };
 
 

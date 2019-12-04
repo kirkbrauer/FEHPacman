@@ -17,6 +17,8 @@
 #define HIGHSCORE_COUNT 5
 #define GHOST_HIDE_DURATION 500
 
+void game();
+void dispHighScores();
 void gameOver(int, bool);
 
 unsigned int dot_data[MAP_WIDTH*MAP_HEIGHT] = {
@@ -121,22 +123,40 @@ unsigned int map[MAP_WIDTH*MAP_HEIGHT] = {
     32,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,31,
 };
 
+float lcdX, lcdY;
+
 int main() {
-
-  float x, y;
-
   LCD.Clear(FEHLCD::Black);
   LCD.SetFontColor(FEHLCD::White);
   LCD.SetOrientation(FEHLCD::East);
 
-  enum Direction dir = East; // Player Direction
+  while (!LCD.Touch(&lcdX, &lcdY));
 
+  game();
+  
+  return 0;
+}
+
+void game() {
+  // Prepare Screen
+  LCD.Clear(FEHLCD::Black);
+  LCD.SetFontColor(FEHLCD::White);
+  LCD.SetOrientation(FEHLCD::East);
+
+  // Player Direction
+  enum Direction dir = East; 
+
+  // Main game collider
   Collider paths(path_data, 8, MAP_WIDTH, MAP_HEIGHT);
 
+  // Instantiations for Graphics
   bool big = false;
   Dot dot;
   Tile tile;
 
+  int x, y;
+
+  // Moving Entities
   Player player(&paths, 8, 8);
   Ghost ghosts[GHOST_COUNT];
   
@@ -146,14 +166,14 @@ int main() {
   ghosts[2] = Ghost(&paths, &player, 16, 32);
   ghosts[3] = Ghost(&paths, &player, 32, 32);
 
+  // Current frame number
   unsigned long long frame = 0;
   unsigned long long hide_start = 0;
 
   Position *player_pos;
   Position *ghost_pos;
 
-  while (!LCD.Touch(&x, &y));
-
+  // Build walls
   for (int x = 0; x < MAP_WIDTH; x++) {
     for (int y = 0; y < MAP_HEIGHT; y++) {
       unsigned int block = map[y*MAP_WIDTH + x];
@@ -181,6 +201,7 @@ int main() {
     }
   }
 
+  // Render Dots
   for (int x = 0; x < MAP_WIDTH; x++) {
     for (int y = 0; y < MAP_HEIGHT; y++) {
       if (dot_data[y*MAP_WIDTH + x] != 0) {
@@ -191,41 +212,33 @@ int main() {
     }
   }
 
-  while (true) {
+  // Dots eaten by the player
+  int dotsEaten = 0;
 
+  // Main game loop
+  while (true) {
     // Choose Direction for Player
-    if (LCD.Touch(&x, &y))
-    {
-      if (y < 90)
-      {
+    if (LCD.Touch(&lcdX, &lcdY)) {
+      if (y < 90) {
         dir = West;
-      }
-      else if (y > 160)
-      {
+      } else if (y > 160) {
         dir = East;
-      }
-      else if (x < 100)
-      {
+      } else if (x < 100) {
         dir = South;
-      }
-      else if (x > 200)
-      {
+      } else if (x > 200) {
         dir = North;
       }
     }
 
-    /*for (int i = 0; i < MAP_WIDTH*MAP_HEIGHT; i++) {
-      ments[i].render();
-    }*/
-
-    // Move Entities
+    // Move Player
     player.move(dir);
     player.update(frame);
     player.render();
     
-    static int dotsEaten = 0;
+    // Check if player eats a dot
     Position *p = player.get_position();
     if (paths.at_intersection(p->x, p->y)) {
+      // Player over dot
       if (dot_data[p->x/8+p->y/8*MAP_WIDTH] != 0) {
         if (dot_data[p->x/8+p->y/8*MAP_WIDTH] == 2) {
           // Make the ghosts attempt to hide
@@ -235,8 +248,10 @@ int main() {
           hide_start = frame;
         }
         dot_data[p->x/8+p->y/8*MAP_WIDTH] = 0;
+        // Increase Score
         player.setScore(player.getScore() + 100);
         dotsEaten++;
+        // Check if any dots left
         if (dotsEaten >= 258) {
           gameOver(player.getScore(), true);
           break;
@@ -244,42 +259,29 @@ int main() {
       }
     }
 
-    if (frame - hide_start > GHOST_HIDE_DURATION) {
-      hide_start = 0;
-      // Make the ghosts chase again
-      for (int i = 0; i < GHOST_COUNT; i++) {
-        ghosts[i].set_mode(Chase);
+    // For each ghost in the game
+    for (int i = 0; i < 4; i++) {
+      ghosts[i].update(frame);
+      // Check if ghost kills player
+      if (ghosts[i].distanceToPlayer(0, 0) < 8) {
+        // Ghost kills player
+        gameOver(player.getScore(), false);
+        break;
       }
-    }
 
-    for (int i = 0; i < GHOST_COUNT; i++) {
-      // Check if the player and the ghost are colliding
-      player_pos = player.get_position();
-      ghost_pos = ghosts[i].get_position();
-      if ((player_pos->x >= ghost_pos->x && player_pos->x <= (ghost_pos->x + 16)) && (player_pos->y >= ghost_pos->y && player_pos->y <= (ghost_pos->y + 16))) {
-        if (ghosts[i].get_mode() == Chase) {
-          // The player dies
-          gameOver(player.getScore(), false);
-        } else {
-          // The ghost is killed
-          ghosts[i].kill();
-        }
-      }
-      // Only render ghosts that are alive
-      if (ghosts[i].is_alive()) {
-        ghosts[i].update(frame);
-        Position *p = ghosts[i].get_position();
-        // Replace Clobbered Dots
-        if (paths.at_intersection(p->x, p->y)) {
-          for (int j = -1; j <= 1; j++) {
-            for (int k = -1; k <= 1; k++) {
-              if ((p->x+j)/8+(p->y+k)/8*MAP_WIDTH < 0 || (p->x+j)/8+(p->y+k)/8*MAP_WIDTH > MAP_WIDTH*MAP_HEIGHT)
-                continue;
-              if (dot_data[(p->x+j)/8+(p->y+k)/8*MAP_WIDTH] != 0) {
-                big = dot_data[(p->x+j)/8+(p->y+k)/8*MAP_WIDTH] == 2;
-                dot = Dot(x*8+4, y*8+4, big);
-                dot.render();
-              }
+      Position *p = ghosts[i].get_position();
+      // Replace Clobbered Dots
+      if (paths.at_intersection(p->x, p->y)) {
+        // Place dots on each side
+        for (int j = -1; j <= 1; j++) {
+          for (int k = -1; k <= 1; k++) {
+            // Bounds Checking
+            if ((p->x+j)/8+(p->y+k)/8*MAP_WIDTH < 0 || (p->x+j)/8+(p->y+k)/8*MAP_WIDTH > MAP_WIDTH*MAP_HEIGHT)
+              continue;
+            // Draw dot if it exists
+            if (dot_data[(p->x+j)/8+(p->y+k)/8*MAP_WIDTH] == 1) {
+              dot = Dot(x*8+4, y*8+4, big);
+              dot.render();
             }
           }
         }
@@ -287,14 +289,17 @@ int main() {
       }
     }
 
+    // Score tracking
     LCD.WriteAt("Score: ", 10, 280);
     LCD.WriteAt(player.getScore(), 20, 290);
+
+    // Each frame delayed 15ms
     frame++;
     Sleep(15);
   }
-  return 0;
 }
 
+// Charset for scores
 char charset[] = {"_ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
 struct score {
   char initals[3]; // Offsets into charset
@@ -303,47 +308,68 @@ struct score {
 struct score highScores[HIGHSCORE_COUNT];
 
 void dispHighScores() {
+  // Disply Header
   LCD.Clear();
-  LCD.WriteAt("High Scores:", 100, 50);
+  LCD.WriteRC("High Scores:", 1, 1);
+
+  // For Each Score
   for (int i = 0; i < 10; i++) {
-    LCD.WriteAt(highScores[i].initals, 120, 65 + 15*i);
-    LCD.WriteAt(highScores[i].score, 120, 65 + 15*i);
+    // Exit if found last score
+    if (highScores[i].score == 0) {
+      break;
+    }
+    // Write initals
+    for (int j = 0; j < 3; j++) {
+      LCD.WriteRC(charset[highScores[i].initals[j]], 1 + j, 2 + i);
+    }
+    // Write score
+    LCD.WriteRC(highScores[i].score, 5, 2 + i);
   }
+
+  // Return to menu
   LCD.WriteAt("Click anywhere to go back...", 0, 0);
   Sleep(100);
-  float x, y;
-  do {} while (!LCD.Touch(&x, &y));
+  do {} while (!LCD.Touch(&lcdX, &lcdY));
 }
 
 void gameOver(int score, bool win) {
+  int x, y;
+  // Page Header
   LCD.Clear();
   char buf[30];
   sprintf(buf, "You %s!", win ? "won" : "lost");
   LCD.WriteRC(buf, 2, 2);
-  LCD.WriteRC("Enter your initals...", 3, 2);
+  LCD.WriteRC("Enter your initials...", 3, 2);
 
+  // Get User initials
   int curChar = 0;
   struct score scr = {{0,0,0}, score};
   while (true) {
+    // Write Characters
     LCD.WriteRC(charset[scr.initals[0]], 4, 4);
     LCD.WriteRC(charset[scr.initals[1]], 4, 6);
     LCD.WriteRC(charset[scr.initals[2]], 4, 8);
-    float x, y;
-    if (LCD.Touch(&x, &y)) {
+    if (LCD.Touch(&lcdX, &lcdY)) {
       if (y < 90) {
+        // Increase Character
         scr.initals[curChar]++;
+        // Check Bounds
         if (scr.initals[curChar] >= sizeof(charset))
           scr.initals[curChar] = 0;
       } else if (y > 160) {
+        // Decrease Character
         scr.initals[curChar]--;
+        // Check Bounds
         if (scr.initals[curChar] < 0)
           scr.initals[curChar] = sizeof(charset)-2;
       } else if (x < 100) {
+        // Back one Character
         if (curChar = 0)
           curChar = 2;
         else
           curChar--;
       } else if (x > 200) {
+        // Next Character
         if (curChar = 2)
           curChar = 0;
         else
@@ -354,6 +380,19 @@ void gameOver(int score, bool win) {
       }
     }
 
-    // TODO: Insert into high score array
+    // Insert into high score array
+    for (int i = 0; i < 5; i++) {
+      // If at end, insert
+      if (highScores[i].score == 0) {
+        highScores[i] = scr;
+        break;
+      }
+      // Insertion Sort into List
+      if (scr.score > highScores[i].score) {
+        struct score temp = highScores[i];
+        highScores[i] = scr;
+        scr = temp;
+      }
+    }
   }
 }

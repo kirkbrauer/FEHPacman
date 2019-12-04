@@ -37,12 +37,6 @@ private:
   enum Direction dir;
   // A pointer to the player
   Player *p;
-  /**
-   * Calculates the distance to the player.
-   * @param xOff The x offset.
-   * @param yOff The y offset.
-   */
-  float distanceToPlayer(int xOff, int yOff);
 public:
   // Default constructor
   Ghost();
@@ -73,6 +67,12 @@ public:
   void kill();
   // Renders the ghost
   void render();
+  /**
+   * Calculates the distance to the player.
+   * @param xOff The x offset.
+   * @param yOff The y offset.
+   */
+  float distanceToPlayer(int xOff, int yOff);
 };
 
 #endif // FEHPACMAN_GHOST_H
