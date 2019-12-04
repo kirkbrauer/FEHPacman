@@ -13,6 +13,9 @@
 #define DG_COUNT 754
 #define MAP_WIDTH 28
 #define MAP_HEIGHT 31
+#define GHOST_COUNT 4
+#define HIGHSCORE_COUNT 5
+#define GHOST_HIDE_DURATION 500
 
 void gameOver(int, bool);
 
@@ -20,7 +23,7 @@ unsigned int dot_data[MAP_WIDTH*MAP_HEIGHT] = {
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,
   0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
-  0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
+  0,2,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,2,0,
   0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
   0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
   0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,
@@ -135,7 +138,7 @@ int main() {
   Tile tile;
 
   Player player(&paths, 8, 8);
-  Ghost ghosts[4];
+  Ghost ghosts[GHOST_COUNT];
   
   // TODO : Give Real Positions on Grid
   ghosts[0] = Ghost(&paths, &player, 56, 56);
@@ -144,6 +147,10 @@ int main() {
   ghosts[3] = Ghost(&paths, &player, 32, 32);
 
   unsigned long long frame = 0;
+  unsigned long long hide_start = 0;
+
+  Position *player_pos;
+  Position *ghost_pos;
 
   while (!LCD.Touch(&x, &y));
 
@@ -176,7 +183,8 @@ int main() {
 
   for (int x = 0; x < MAP_WIDTH; x++) {
     for (int y = 0; y < MAP_HEIGHT; y++) {
-      if (dot_data[y*MAP_WIDTH + x] == 1) {
+      if (dot_data[y*MAP_WIDTH + x] != 0) {
+        big = dot_data[y*MAP_WIDTH + x] == 2;
         dot = Dot(x*8+4, y*8+4, big);
         dot.render();
       }
@@ -218,7 +226,14 @@ int main() {
     static int dotsEaten = 0;
     Position *p = player.get_position();
     if (paths.at_intersection(p->x, p->y)) {
-      if (dot_data[p->x/8+p->y/8*MAP_WIDTH] == 1) {
+      if (dot_data[p->x/8+p->y/8*MAP_WIDTH] != 0) {
+        if (dot_data[p->x/8+p->y/8*MAP_WIDTH] == 2) {
+          // Make the ghosts attempt to hide
+          for (int i = 0; i < GHOST_COUNT; i++) {
+            ghosts[i].set_mode(Hide);
+          }
+          hide_start = frame;
+        }
         dot_data[p->x/8+p->y/8*MAP_WIDTH] = 0;
         player.setScore(player.getScore() + 100);
         dotsEaten++;
@@ -229,24 +244,47 @@ int main() {
       }
     }
 
-    for (int i = 0; i < 4; i++) {
-      ghosts[i].move();
-      ghosts[i].update(frame);
-      Position *p = ghosts[i].get_position();
-      // Replace Clobbered Dots
-      if (paths.at_intersection(p->x, p->y)) {
-        for (int j = -1; j <= 1; j++) {
-          for (int k = -1; k <= 1; k++) {
-            if ((p->x+j)/8+(p->y+k)/8*MAP_WIDTH < 0 || (p->x+j)/8+(p->y+k)/8*MAP_WIDTH > MAP_WIDTH*MAP_HEIGHT)
-              continue;
-            if (dot_data[(p->x+j)/8+(p->y+k)/8*MAP_WIDTH] == 1) {
-              dot = Dot(x*8+4, y*8+4, big);
-              dot.render();
+    if (frame - hide_start > GHOST_HIDE_DURATION) {
+      hide_start = 0;
+      // Make the ghosts chase again
+      for (int i = 0; i < GHOST_COUNT; i++) {
+        ghosts[i].set_mode(Chase);
+      }
+    }
+
+    for (int i = 0; i < GHOST_COUNT; i++) {
+      // Check if the player and the ghost are colliding
+      player_pos = player.get_position();
+      ghost_pos = ghosts[i].get_position();
+      if ((player_pos->x >= ghost_pos->x && player_pos->x <= (ghost_pos->x + 16)) && (player_pos->y >= ghost_pos->y && player_pos->y <= (ghost_pos->y + 16))) {
+        if (ghosts[i].get_mode() == Chase) {
+          // The player dies
+          gameOver(player.getScore(), false);
+        } else {
+          // The ghost is killed
+          ghosts[i].kill();
+        }
+      }
+      // Only render ghosts that are alive
+      if (ghosts[i].is_alive()) {
+        ghosts[i].update(frame);
+        Position *p = ghosts[i].get_position();
+        // Replace Clobbered Dots
+        if (paths.at_intersection(p->x, p->y)) {
+          for (int j = -1; j <= 1; j++) {
+            for (int k = -1; k <= 1; k++) {
+              if ((p->x+j)/8+(p->y+k)/8*MAP_WIDTH < 0 || (p->x+j)/8+(p->y+k)/8*MAP_WIDTH > MAP_WIDTH*MAP_HEIGHT)
+                continue;
+              if (dot_data[(p->x+j)/8+(p->y+k)/8*MAP_WIDTH] != 0) {
+                big = dot_data[(p->x+j)/8+(p->y+k)/8*MAP_WIDTH] == 2;
+                dot = Dot(x*8+4, y*8+4, big);
+                dot.render();
+              }
             }
           }
         }
+        ghosts[i].render();
       }
-      ghosts[i].render();
     }
 
     LCD.WriteAt("Score: ", 10, 280);
@@ -262,7 +300,7 @@ struct score {
   char initals[3]; // Offsets into charset
   int score;
 };
-struct score highScores[5];
+struct score highScores[HIGHSCORE_COUNT];
 
 void dispHighScores() {
   LCD.Clear();

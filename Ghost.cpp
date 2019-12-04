@@ -57,7 +57,82 @@ Ghost::Ghost(Collider *c, Player *p, Position pos) : Sprite(ghost_frames, GHOST_
     coll = c;
 }
 
-void Ghost::update(unsigned int frame) {}
+void Ghost::set_mode(GhostMode m) {
+  mode = m;
+}
+
+GhostMode Ghost::get_mode() {
+  return mode;
+}
+
+void Ghost::update(unsigned int frame) {
+  // Don't move the ghost if it is dead
+  if (!alive)
+    return;
+  // Check if we are at an intersection
+  if (coll->at_intersection(position.x, position.y)) {
+    // Choose Direction
+    float distance;
+    if (mode == Chase) {
+      distance = 500;
+      // Find the shortest distance to the player where the Ghost can go
+      enum Direction min;
+      if (coll->can_go_north(position.x, position.y) && dir != South) {
+        min = North;
+        distance = distanceToPlayer(0, 8);
+      }
+      if (coll->can_go_south(position.x, position.y) && distanceToPlayer(0, -8) < distance && dir != North) {
+        min = South;
+        distance = distanceToPlayer(0, -8);
+      }
+      if (coll->can_go_east(position.x, position.y) && distanceToPlayer(8, 0) < distance && dir != West) {
+        min = East;
+        distance = distanceToPlayer(8, 0);
+      }
+      if (coll->can_go_west(position.x, position.y) && distanceToPlayer(-8, 0) < distance && dir != East) {
+        min = West;
+        distance = distanceToPlayer(-8, 0);
+      }
+      dir = min;
+    } else {
+      distance = 0;
+      // Find the furthest distance from the player where the Ghost can go
+      enum Direction max;
+      if (coll->can_go_north(position.x, position.y) && dir != South) {
+        max = North;
+        distance = distanceToPlayer(0, 8);
+      }
+      if (coll->can_go_south(position.x, position.y) && distanceToPlayer(0, -8) > distance && dir != North) {
+        max = South;
+        distance = distanceToPlayer(0, -8);
+      }
+      if (coll->can_go_east(position.x, position.y) && distanceToPlayer(8, 0) > distance && dir != West) {
+        max = East;
+        distance = distanceToPlayer(8, 0);
+      }
+      if (coll->can_go_west(position.x, position.y) && distanceToPlayer(-8, 0) > distance && dir != East) {
+        max = West;
+        distance = distanceToPlayer(-8, 0);
+      }
+      dir = max;
+    }
+  }
+  // Move Forward in the selected direction
+  switch (dir) {
+    case North:
+      position.y -= 1;
+      break;
+    case East:
+      position.x += 1;
+      break;
+    case South:
+      position.y += 1;
+      break;
+    case West:
+      position.x -= 1;
+      break;
+  }
+}
 
 float Ghost::distanceToPlayer(int xOff, int yOff) {
     // Calculate the distance to the player using distance formula
@@ -65,49 +140,8 @@ float Ghost::distanceToPlayer(int xOff, int yOff) {
     return sqrt(val);
 }
 
-void Ghost::move() {
-    // Don't move the ghost if it is dead
-    if (!alive) return;
-    // Check if we are at an intersection
-    if (coll->at_intersection(position.x, position.y)) {
-        // Chose Direction
-        LCD.SetFontColor(WHITE);
-        float distance = 10000000; // TODO : Better than default high value
-        // Find the shortest distance to the player where the Ghost can go
-        enum Direction min;
-        if (coll->can_go_north(position.x, position.y) && dir != South) {
-            min = North;
-            distance = distanceToPlayer(0, 8);
-        }
-        if (coll->can_go_south(position.x, position.y) && distanceToPlayer(0, -8) < distance && dir != North) {
-            min = South;
-            distance = distanceToPlayer(0, -8);
-        }
-        if (coll->can_go_east(position.x, position.y) && distanceToPlayer(8, 0) < distance && dir != West) {
-            min = East;
-            distance = distanceToPlayer(8, 0);
-        }
-        if (coll->can_go_west(position.x, position.y) && distanceToPlayer(-8, 0) < distance && dir != East) {
-            min = West;
-            distance = distanceToPlayer(-8, 0);
-        }
-        dir = min;
-    }
-    // Move Forward in the selected direction
-    switch  (dir) {
-        case North:
-        position.y -= 1;
-        break;
-        case East:
-        position.x += 1;
-        break;
-        case South:
-        position.y += 1;
-        break;
-        case West:
-        position.x -= 1;
-        break;
-    }
+bool Ghost::is_alive() {
+  return alive;
 }
 
 void Ghost::kill() {

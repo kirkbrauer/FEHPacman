@@ -61,10 +61,14 @@ public:
    * @param pos The ghost position.
    */
   Ghost(Collider *collider, Player *player, Position pos);
+  // Sets the ghost mode
+  void set_mode(GhostMode mode);
+  // Gets the ghost mode
+  GhostMode get_mode();
   // Updates the ghost every frame
   void update(unsigned int frame);
-  // Moves the ghost
-  void move();
+  // Returns if the ghost is alive
+  bool is_alive();
   // Kills the ghost
   void kill();
   // Renders the ghost
