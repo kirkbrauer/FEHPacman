@@ -120,14 +120,14 @@ unsigned int map[MAP_WIDTH*MAP_HEIGHT] = {
     32,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,31,
 };
 
-float x, y;
+float lcdX, lcdY;
 
 int main() {
   LCD.Clear(FEHLCD::Black);
   LCD.SetFontColor(FEHLCD::White);
   LCD.SetOrientation(FEHLCD::East);
 
-  while (!LCD.Touch(&x, &y));
+  while (!LCD.Touch(&lcdX, &lcdY));
 
   game();
   
@@ -209,7 +209,7 @@ void game() {
   // Main game loop
   while (true) {
     // Choose Direction for Player
-    if (LCD.Touch(&x, &y)) {
+    if (LCD.Touch(&lcdX, &lcdY)) {
       if (y < 90) {
         dir = West;
       } else if (y > 160) {
@@ -316,7 +316,7 @@ void dispHighScores() {
   // Return to menu
   LCD.WriteAt("Click anywhere to go back...", 0, 0);
   Sleep(100);
-  do {} while (!LCD.Touch(&x, &y));
+  do {} while (!LCD.Touch(&lcdX, &lcdY));
 }
 
 void gameOver(int score, bool win) {
@@ -335,7 +335,7 @@ void gameOver(int score, bool win) {
     LCD.WriteRC(charset[scr.initals[0]], 4, 4);
     LCD.WriteRC(charset[scr.initals[1]], 4, 6);
     LCD.WriteRC(charset[scr.initals[2]], 4, 8);
-    if (LCD.Touch(&x, &y)) {
+    if (LCD.Touch(&lcdX, &lcdY)) {
       if (y < 90) {
         // Increase Character
         scr.initals[curChar]++;
