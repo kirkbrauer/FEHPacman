@@ -10,7 +10,7 @@
 #include "Collider.h"
 
 #define PLAYER_SIZE 16
-#define PLAYER_FRAME_COUNT 3
+#define PLAYER_FRAME_COUNT 4
 
 class Player: public Sprite {
   private:
