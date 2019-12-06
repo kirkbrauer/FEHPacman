@@ -19,41 +19,16 @@
 
 void game();
 void dispHighScores();
+void dispInstructions();
 void gameOver(int, bool);
 
-unsigned int dot_data[MAP_WIDTH*MAP_HEIGHT] = {
-  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,
-  0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
-  0,2,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,2,0,
-  0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
-  0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-  0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,
-  0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,
-  0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0,
-  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,
-  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
-  0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,
-  0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
-  0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
-  0,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,0,
-  0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,
-  0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,
-  0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0,
-  0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,
-  0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,
-  0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
-  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+// Charset for scores
+char charset[] = {"_ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
+struct score {
+  char initals[3]; // Offsets into charset
+  int score;
 };
+score highScores[HIGHSCORE_COUNT];
 
 unsigned int path_data[MAP_WIDTH*MAP_HEIGHT] = {
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -124,20 +99,81 @@ unsigned int map[MAP_WIDTH*MAP_HEIGHT] = {
 };
 
 float lcdX, lcdY;
+int wins = 0;
+int losses = 0;
+float scoreTot = 0;
 
 int main() {
   LCD.Clear(FEHLCD::Black);
   LCD.SetFontColor(FEHLCD::White);
   LCD.SetOrientation(FEHLCD::East);
 
-  while (!LCD.Touch(&lcdX, &lcdY));
+  for (int i = 0; i < 5; i++) {
+    highScores[i] = {{'\0', '\0', '\0'}, 0};
+  }
 
-  game();
+  while (true) {
+    LCD.Clear();
+    LCD.SetFontColor(FEHLCD::White);
+    LCD.WriteLine("FEHPacman");
+    LCD.WriteLine("");
+    LCD.WriteLine(" 1. Play Game");
+    LCD.WriteLine(" 2. View Scoreboard");
+    LCD.WriteLine(" 3. Instructions");
+    LCD.WriteLine(" 4. Exit");
+
+    while (!LCD.Touch(&lcdX, &lcdY));
+    if (lcdX > 281 && lcdX < 291 && lcdY > 22 && lcdY < 224) {
+      game();
+    } else if (lcdX > 263 && lcdX < 273 && lcdY > 21 && lcdY < 226) {
+      dispHighScores();
+    } else if (lcdX > 246 && lcdX < 258 && lcdY > 22 && lcdY < 228) {
+      dispInstructions();
+    } else if (lcdX > 225 && lcdX < 241 && lcdY > 21 && lcdY < 225) {
+      break;
+    }
+  }
   
   return 0;
 }
 
 void game() {
+  bool exitLoop = false;
+
+  unsigned int dot_data[MAP_WIDTH*MAP_HEIGHT] = {
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,
+  0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
+  0,2,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,2,0,
+  0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
+  0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
+  0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,
+  0,1,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,
+  0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0,
+  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,
+  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,
+  0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,
+  0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
+  0,1,0,0,0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,0,0,1,0,
+  0,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,1,1,1,0,
+  0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,
+  0,0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,0,0,
+  0,1,1,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,0,0,1,1,1,1,1,1,0,
+  0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,
+  0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,
+  0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,
+  0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+};
+
   // Prepare Screen
   LCD.Clear(FEHLCD::Black);
   LCD.SetFontColor(FEHLCD::White);
@@ -161,17 +197,14 @@ void game() {
   Ghost ghosts[GHOST_COUNT];
   
   // TODO : Give Real Positions on Grid
-  ghosts[0] = Ghost(&paths, &player, 56, 56);
-  ghosts[1] = Ghost(&paths, &player, 32, 16);
-  ghosts[2] = Ghost(&paths, &player, 16, 32);
-  ghosts[3] = Ghost(&paths, &player, 32, 32);
+  ghosts[0] = Ghost(&paths, &player, 56, 48);
+  ghosts[1] = Ghost(&paths, &player, 168, 48);
+  ghosts[2] = Ghost(&paths, &player, 56, 128);
+  ghosts[3] = Ghost(&paths, &player, 168, 128);
 
   // Current frame number
   unsigned long long frame = 0;
   unsigned long long hide_start = 0;
-
-  Position *player_pos;
-  Position *ghost_pos;
 
   // Build walls
   for (int x = 0; x < MAP_WIDTH; x++) {
@@ -220,13 +253,13 @@ void game() {
   while (true) {
     // Choose Direction for Player
     if (LCD.Touch(&lcdX, &lcdY)) {
-      if (y < 90) {
+      if (lcdY < 90) {
         dir = West;
-      } else if (y > 160) {
+      } else if (lcdY > 160) {
         dir = East;
-      } else if (x < 100) {
+      } else if (lcdX < 100) {
         dir = South;
-      } else if (x > 200) {
+      } else if (lcdX > 200) {
         dir = North;
       }
     }
@@ -263,9 +296,7 @@ void game() {
       // Only render and update ghosts that are alive
       if (ghosts[i].is_alive()) {
         // Update the ghost position
-        if (!(frame % 10 == 0)) {
-          ghosts[i].update(frame);
-        }
+        ghosts[i].update(frame);
         // Check if ghost kills player
         if (ghosts[i].distanceToPlayer(0, 0) < 8) {
           if (ghosts[i].get_mode() == Hide) {
@@ -278,7 +309,7 @@ void game() {
           } else {
             // Ghost kills player
             gameOver(player.getScore(), false);
-            break;
+            return;
           }
         }
 
@@ -286,8 +317,8 @@ void game() {
         // Replace Clobbered Dots
         if (paths.at_intersection(p->x, p->y)) {
           // Place dots on each side
-          for (int j = -1; j <= 1; j++) {
-            for (int k = -1; k <= 1; k++) {
+          for (int j = -2; j <= 2; j++) {
+            for (int k = -2; k <= 2; k++) {
               // Bounds Checking
               if ((p->x+j)/8+(p->y+k)/8*MAP_WIDTH < 0 || (p->x+j)/8+(p->y+k)/8*MAP_WIDTH > MAP_WIDTH*MAP_HEIGHT)
                 continue;
@@ -302,22 +333,22 @@ void game() {
               }
             }
           }
-          // Render the ghost
-          ghosts[i].render();
         }
+        // Render the ghost
+        ghosts[i].render();
       }
     }
 
     // Check if any dots left
     if (dotsEaten >= 258) {
       gameOver(player.getScore(), true);
-      break;
+      return;
     }
 
     // Check if any ghosts are left alive
     if (ghostsAlive == 0) {
       gameOver(player.getScore(), true);
-      break;
+      return;
     }
 
     // Stop the ghosts from hiding after a specific duration
@@ -328,115 +359,57 @@ void game() {
       }
     }
 
-    // For each ghost in the game
-    for (int i = 0; i < GHOST_COUNT; i++) {
-      
-    }
-
     // Score tracking
+    LCD.SetFontColor(WHITE);
     LCD.WriteAt("Score: ", 10, 280);
-    LCD.WriteAt(player.getScore(), 20, 290);
+    LCD.WriteAt(player.getScore(), 150, 280);
 
     // Each frame delayed 15ms
     frame++;
-    Sleep(15);
+    Sleep(2);
   }
 }
-
-// Charset for scores
-char charset[] = {"_ABCDEFGHIJKLMNOPQRSTUVWXYZ"};
-struct score {
-  char initals[3]; // Offsets into charset
-  int score;
-};
-struct score highScores[HIGHSCORE_COUNT];
 
 void dispHighScores() {
   // Disply Header
   LCD.Clear();
-  LCD.WriteRC("High Scores:", 1, 1);
+  LCD.WriteLine("Statistics:");
 
-  // For Each Score
-  for (int i = 0; i < 10; i++) {
-    // Exit if found last score
-    if (highScores[i].score == 0) {
-      break;
-    }
-    // Write initals
-    for (int j = 0; j < 3; j++) {
-      LCD.WriteRC(charset[highScores[i].initals[j]], 1 + j, 2 + i);
-    }
-    // Write score
-    LCD.WriteRC(highScores[i].score, 5, 2 + i);
+  LCD.Write("Wins: ");
+  LCD.WriteLine(wins);
+  LCD.Write("Losses: ");
+  LCD.WriteLine(losses);
+  LCD.Write("Average Points: ");
+  if (wins+losses == 0) {
+    LCD.WriteLine("0.0");
+  } else {
+    LCD.WriteLine(scoreTot / (wins+losses));
   }
 
   // Return to menu
-  LCD.WriteAt("Click anywhere to go back...", 0, 0);
+  LCD.WriteLine("Click anywhere to go back...");
+  Sleep(100);
+  do {} while (!LCD.Touch(&lcdX, &lcdY));
+}
+
+void dispInstructions() {
+  LCD.Clear();
+  LCD.SetFontColor(WHITE);
+
+  LCD.WriteLine("Instructions:");
+  LCD.WriteLine(" 1. Click start Game");
+  LCD.WriteLine(" 2. Click sides of screen to change direction");
+  LCD.WriteLine(" 3. Eat pellets, avoid ghosts");
+  LCD.WriteLine(" 4. Eat power pellet to eat ghosts");
+  LCD.WriteLine("");
+
+  // Return to menu
+  LCD.WriteLine("Click anywhere to go back...");
   Sleep(100);
   do {} while (!LCD.Touch(&lcdX, &lcdY));
 }
 
 void gameOver(int score, bool win) {
-  int x, y;
-  // Page Header
-  LCD.Clear();
-  char buf[30];
-  sprintf(buf, "You %s!", win ? "won" : "lost");
-  LCD.WriteRC(buf, 2, 2);
-  LCD.WriteRC("Enter your initials...", 3, 2);
-
-  // Get User initials
-  int curChar = 0;
-  struct score scr = {{0,0,0}, score};
-  while (true) {
-    // Write Characters
-    LCD.WriteRC(charset[scr.initals[0]], 4, 4);
-    LCD.WriteRC(charset[scr.initals[1]], 4, 6);
-    LCD.WriteRC(charset[scr.initals[2]], 4, 8);
-    if (LCD.Touch(&lcdX, &lcdY)) {
-      if (y < 90) {
-        // Increase Character
-        scr.initals[curChar]++;
-        // Check Bounds
-        if (scr.initals[curChar] >= sizeof(charset))
-          scr.initals[curChar] = 0;
-      } else if (y > 160) {
-        // Decrease Character
-        scr.initals[curChar]--;
-        // Check Bounds
-        if (scr.initals[curChar] < 0)
-          scr.initals[curChar] = sizeof(charset)-2;
-      } else if (x < 100) {
-        // Back one Character
-        if (curChar = 0)
-          curChar = 2;
-        else
-          curChar--;
-      } else if (x > 200) {
-        // Next Character
-        if (curChar = 2)
-          curChar = 0;
-        else
-          curChar++;
-      } else {
-        // Finished Entering
-        break;
-      }
-    }
-
-    // Insert into high score array
-    for (int i = 0; i < 5; i++) {
-      // If at end, insert
-      if (highScores[i].score == 0) {
-        highScores[i] = scr;
-        break;
-      }
-      // Insertion Sort into List
-      if (scr.score > highScores[i].score) {
-        struct score temp = highScores[i];
-        highScores[i] = scr;
-        scr = temp;
-      }
-    }
-  }
+  scoreTot += score;
+  win ? wins++ : losses++;
 }
